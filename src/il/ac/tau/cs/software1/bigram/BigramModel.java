@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.CharBuffer;
 import java.util.Locale;
 
 public class BigramModel {
@@ -161,8 +162,33 @@ public class BigramModel {
     /*
      * @pre: fileName is a legal file path
      */
-    public void loadModel(String fileName) throws IOException { // Question 4
-        // TODO: implement
+    public void loadModel(String fileName) throws IOException {
+        File fromFileVoc = new File(fileName + VOC_FILE_SUFFIX);
+        BufferedReader vocReader= new BufferedReader(new FileReader(fromFileVoc));
+        String line;
+        String header = vocReader.readLine();
+        int wordCount = Integer.parseInt(header.split(" ")[0]);
+        String[] vocab = new String[wordCount];
+        while ((line = vocReader.readLine()) != null){
+            String[] parts = line.split(",", 2);
+            int index = Integer.parseInt(parts[0]);
+            vocab[index] = parts[1];
+        }
+        vocReader.close();
+        mVocabulary = vocab;
+
+        File fromFileCounts = new File(fileName + COUNTS_FILE_SUFFIX);
+        BufferedReader countsReader= new BufferedReader(new FileReader(fromFileCounts));
+        int [][] counts = new int[wordCount][wordCount];
+        while ((line = countsReader.readLine()) != null){
+            String[] pairAndCount = line.split(":");
+            String[] pair = pairAndCount[0].split(",");
+            int i = Integer.parseInt(pair[0]);
+            int j = Integer.parseInt(pair[1]);
+            counts[i][j] = Integer.parseInt(pairAndCount[1]);
+        }
+        countsReader.close();
+        mBigramCounts = counts;
     }
 
     /*
