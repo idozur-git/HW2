@@ -137,8 +137,25 @@ public class BigramModel {
      * @pre: the method initModel was called (the language model is initialized)
      * @pre: fileName is a legal file path
      */
-    public void saveModel(String fileName) throws IOException { // Question 3
-        // TODO: implement
+    public void saveModel(String fileName) throws IOException {
+        File toFileVoc = new File(fileName + VOC_FILE_SUFFIX);
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(toFileVoc));
+        int vocabSize = mVocabulary.length;
+        bufferedWriter.write(vocabSize + " " + "words" + System.lineSeparator());
+        for (int i = 0; i < vocabSize; i++){
+                bufferedWriter.write(i + "," + mVocabulary[i] + System.lineSeparator());
+        }
+        bufferedWriter.close();
+        File toFileCounts = new File(fileName + COUNTS_FILE_SUFFIX);
+        BufferedWriter bufferedWriter2 = new BufferedWriter(new FileWriter(toFileCounts));
+        for (int x = 0; x < vocabSize; x++){
+            for (int y = 0; y < vocabSize; y++){
+                if (mBigramCounts[x][y] != 0){
+                    bufferedWriter2.write(x + "," + y + ":" + mBigramCounts[x][y] + System.lineSeparator());
+                }
+            }
+        }
+        bufferedWriter2.close();
     }
 
     /*
