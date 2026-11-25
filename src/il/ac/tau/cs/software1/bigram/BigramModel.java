@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.CharBuffer;
+import java.util.Arrays;
 import java.util.Locale;
 
 public class BigramModel {
@@ -197,9 +198,17 @@ public class BigramModel {
      * @pre: each two words in the sentence are separated with a single space
      * @post: if sentence is probable, according to the model, $ret = true, else, $ret = false
      */
-    public boolean isLegalSentence(String sentence) { // Question 5
-        // TODO: implement
-        return false;
+    public boolean isLegalSentence(String sentence) {
+        String[] tokens = sentence.split(" ");
+        if (tokens.length == 1) {return (findIndex(mVocabulary, tokens[0]) != ELEMENT_NOT_FOUND) || (sentence.isEmpty());}
+        for (int i = 0; i < tokens.length - 1; i++){
+            if (findIndex(mVocabulary, tokens[i]) == ELEMENT_NOT_FOUND || findIndex(mVocabulary, tokens[i+1]) == ELEMENT_NOT_FOUND){
+                return false;
+            }
+            if (mBigramCounts[findIndex(mVocabulary, tokens[i])][findIndex(mVocabulary, tokens[i+1])] != 0) {continue;}
+            else {return false;}
+        }
+        return true;
     }
 
     ///////////////////////////////////////////////////////////////////////////
